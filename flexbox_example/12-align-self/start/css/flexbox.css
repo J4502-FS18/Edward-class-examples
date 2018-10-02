@@ -1,0 +1,13 @@
+/* =================================
+  Flexbox
+==================================== */
+
+.container {
+	display: flex;
+	height: 300px;
+	align-items: flex-start;
+}
+
+.item-2 {
+	align-self: center;
+}

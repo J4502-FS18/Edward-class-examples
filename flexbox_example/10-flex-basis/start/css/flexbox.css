@@ -1,0 +1,16 @@
+/* =================================
+  Flexbox
+==================================== */
+
+.container {
+	display: flex;
+}
+
+.item {
+	flex-basis: 100px;
+	flex-grow: 1;
+}
+
+.item-3 {
+	flex-grow: 2;
+}
