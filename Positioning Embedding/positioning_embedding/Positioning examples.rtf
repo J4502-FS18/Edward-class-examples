@@ -1,0 +1,352 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs40 \cf0 Floats \
+\
+Take a look at the image, right now is huge because it\'92s set to width 100%. Show on mobile view, that\'92s a little better. \
+\
+What if we want some text to wrap around it? \
+\
+Float left and float right are two options for how we would be able to do that. No float center value. \
+\
+Let\'92s add a float to that image: \
+\
+img \{\
+  border: none;\
+  float: left; \
+\}\
+\
+This doesn\'92t currently do anything because the image is set to be 100%. Need to make it narrower for float to work. \
+\
+img \{\
+  border: none;\
+  float: left; \
+  width: 50%; \
+\}\
+\
+That looks better, but now our caption is above it and the text is next to it. Why is that? \
+\
+Float replaces the normal document flow. \
+\
+Now, let\'92s deal with one thing at a time. First off, we have this issue where images are running into the text itself. We can deal with that if we have some margin set on the image: \
+\
+img \{\
+  border: none;\
+  float: left;\
+  width: 50%;\
+  margin-right: 10px; \
+\}\
+\
+Which will push the text away. \
+\
+Problem: the text is super narrow now. We can make the image a little smaller: \
+\
+img \{\
+  border: none;\
+  float: left;\
+  width: 40%;\
+  margin-right: 10px; \
+\}\
+\
+So how do we get that caption down under the image? A lot of people assume we might just add a float to it: \
+\
+.caption \{\
+  font-family: Georgia, "Times New Roman", serif;\
+  font-style: italic;\
+  text-align: right;\
+  margin-top: 5px;\
+  float: left;\
+ \}\
+\
+Now it sits under the caption, but it\'92s too wide. You might try to fix it by adding a width to it: \
+\
+.caption \{\
+  font-family: Georgia, "Times New Roman", serif;\
+  font-style: italic;\
+  text-align: right;\
+  margin-top: 5px;\
+  float: left;\
+  width: 40%; \
+\}\
+\
+And now it\'92s next to the caption. This is a feature of float \'97 because this is out of the normal document flow, it has enough space to sit there next to the caption. \
+\
+We could fix the behavior of a floated element by adding the \'93clear\'94 command, which basically tells the element to act as though whatever\'92s before it is a non-floated element. So we could do something like this: \
+\
+.caption \{\
+  font-family: Georgia, "Times New Roman", serif;\
+  font-style: italic;\
+  text-align: right;\
+  margin-top: 5px;\
+  clear: both; \
+  float: left;\
+  width: 40%;\
+\}\
+\
+Which forces it under the photo, then we could go and align the text to the left (either with text-align: left; or just getting rid of the text-align command) \
+\
+.caption \{\
+  font-family: Georgia, "Times New Roman", serif;\
+  font-style: italic;\
+  text-align: right;\
+  margin-top: 5px;\
+  clear: both; \
+  float: left;\
+  width: 40%;\
+\}\
+\
+Now that text to the right of it is a little jaggy. So we could add some margin to it, or do some other stuff. \
+\
+I should mention here that because we\'92ve applied the style here to the img tag, any new image that we put in will also be floated: \
+\
+<img src="img/bb-8.jpg" alt="BB-8 peeks around the corner" />\
+\
+So you probably don\'92t want every image that you put on the page to be 40% wide and floated left, so you could add a class of images to this, to float images left or right: \
+\
+    <img class="float_right" src="img/bb-8.jpg" alt="BB-8 peeks around the corner" />\
+\
+And \
+\
+    <img class="float_right" src="img/bb-8.jpg" alt="BB-8 peeks around the corner" />\
+\
+And then you could create a caption with some caption text and add that class to it: \
+\
+    <p class="caption float_right">BB-8 peeks around the corner</p>\
+\
+\
+And then what you run into is that the caption style for floating left is overriding the style for floating right, and then you go down the rabbit hole of adding two caption floats, and your code gets bloated. \
+\
+It would be better to approach this in a different way. We\'92re treating this as two separate components, when what we really want to do is to have a module on the page that\'92s a photo and a caption, and some text runs around it. So let\'92s rethink this a little, and create a modular unit for these two: \
+\
+    <div class="photo_aside">\
+      <img src="img/rey.jpg" alt="A picture of Rey Skywalker" width="100%"/>\
+\
+      <p class="caption">Rey is probably a Skywalker. Deal with it.</p>\
+    </div>\
+\
+I don\'92t have any actual idea what to name this, because I kind of hate descriptive class names, but I\'92m also not sure they\'92re wrong here. Anyhow. \
+\
+Now that this is one unit, we can manipulate just the containing element, and see what happens here: \
+\
+.photo_aside \{\
+  width: 40%;\
+  float: left;\
+  margin-right: 10px; \
+\}\
+\
+And then we could apply that class anywhere on the page to get the photos to display within it: \
+\
+  <div class="photo_aside">\
+      <img src="img/bb-8.jpg" alt="BB-8 peeks around the corner" />\
+\
+      <p class="caption">BB-8 peeks around the corner</p>\
+    </div>\
+\
+Remember, the logic here is happening because the photos are set to display at 100% width *of its containing element*. \
+\
+
+\b Positioning and Stickying 
+\b0 \
+\
+The position property in CSS is super confusing, but we can use that to make something stay where we want it to be. Let\'92s look at an example: inside of our index here, we have a new paragraph inside of index.html\
+\
+    <p class="box">This is some contnet that I want to stay in a fixed position on the page.</p>\
+\
+So I can style that class of \'93box\'94 a few different ways: \
+\
+.box \{\
+  position: fixed;\
+\}\
+\
+This fixes it in place. We can then add a width to it: \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0   width: 200px;\
+\
+And some attributes that refer to its position relative to the spot on the page where you want it to be: \
+\
+  top: 100px;\
+  right: 60px;\
+\
+And let\'92s add a background color to it, so we can see it relative to the rest of the page: \
+\
+background-color: #ccc; \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \
+If I wanted it to stay at the top of the page, I would assume I could set it to top: 0px; \
+\
+The issue is that there\'92s always some margin around the body element on a page. The old trick to deal with this is using negative margin: \
+\
+margin-top: -10px; \
+\
+And we can balance that with some padding at the top: \
+\
+Padding-top: 10px; \
+\
+Now what if I want to create some content that will start somewhere, then stay in a fixed position on the page? \
+\
+We can use the sticky position property to handle that \
+\
+.box \{\
+  background-color: #ccc;\
+  position: sticky;\
+  width: 200px;\
+  top: 20px;\
+\}\
+\
+And can edit that a little to mess with the positioning:\
+\
+.box \{\
+  background-color: #ccc;\
+  position: sticky;\
+  width: 100%;\
+  top: 0px;\
+\}\
+\
+{\field{\*\fldinst{HYPERLINK "https://caniuse.com/#search=sticky"}}{\fldrslt https://caniuse.com/#search=sticky}}\
+\
+\
+
+\b Embedding
+\b0 \
+\
+Embedding is super straightforward for social media, less so for video. \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\b \cf0 embedding social media:\
+
+\b0 \
+YouTube: Share arrow below video you want to embed \
+\
+Go to TLJ trailer \
+\
+{\field{\*\fldinst{HYPERLINK "file:///Users/weirr/Desktop/robweir/w8d2_class_ex/embed/finished.html"}}{\fldrslt <iframe width="560" height="315" src="https://www.youtube.com/embed/kJ36oNzD2zo" frameborder="0" allowfullscreen></iframe>}}\
+\
+talk about width/height specifically set \
+\
+show Fluid Width Video: https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php\
+\
+So what we need to do is to add another div here as a video wrapper: \
+\
+    <div class="videoWrapper">\
+\
+and then style that in the CSS: \
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 .videoWrapper \{\
+	position: relative;\
+	padding-bottom: 56.25%; /* 16:9 */\
+	padding-top: 25px;\
+	height: 0;\
+\}\
+\
+What this does is set the positioning property to be relative to that div \'97 explain positioning property a little. \
+\
+.videoWrapper iframe \{\
+	position: absolute;\
+	top: 0;\
+	left: 0;\
+	width: 100%;\
+	height: 100%;\
+\}\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \
+absolute is the trickiest position value. absolute behaves like fixed except relative to the nearest positioned ancestor instead of relative to the viewport. If an absolutely-positioned element has no positioned ancestors, it uses the document body, and still moves along with page scrolling. Remember, a "positioned" element is one whose position is anything except static.\
+\
+Twitter: three dots, \'93embed tweet\'94 \
+\
+\
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">This is a great, concise thread about feminism and what happens when men are sexually harassed <a href="https://t.co/VzsY0AjcBO">https://t.co/VzsY0AjcBO</a></p>&mdash; Erin Kissane (@kissane) <a href="https://twitter.com/kissane/status/918165646491316224?ref_src=twsrc%5Etfw">October 11, 2017</a></blockquote>\
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>\
+\
+Embed a timeline: https://support.twitter.com/articles/20170071 and then will go to your own timeline, Setting > Widgets \
+\
+Can go to https://publish.twitter.com/ for more options \
+\
+Do this one to start with: \
+\
+can set an explicit width in the timeline: \
+\
+<a class="twitter-timeline" href="https://twitter.com/robweir" width="300px">\
+\
+and number of tweets to show: \
+\
+data-tweet-limit="3"\
+\
+\
+then try out the button embed: \
+\
+<a href="https://twitter.com/intent/tweet?screen_name=robweir" class="twitter-mention-button" data-show-count="false">Tweet to @robweir</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>\
+\
+
+\b Backgrounds \
+\
+
+\b0 You already know how to set the background color of an item: \
+\
+#container \{\
+  width: 95%;\
+  margin: 0 auto;\
+  background-color: lightblue; \
+\}\
+\
+What if you want to set an image as the background? \
+\
+  background-image: url("img/finn.jpg"); \
+\
+Obviously don\'92t use that actual image. \
+\
+The image will repeat by default (keep scrolling!) \
+\
+To make it not repeat, use \
+\
+What if we want it to not scroll with the rest of the body, but be fixed? \
+\
+  background-attachment: fixed;\
+\
+Now, what if we want to make that background lighter, or work differently? We can try to use an \'93opacity\'94 property on the container: \
+\
+#container \{\
+	opacity: 0.5; \
+\}\
+\
+The problem is, that makes the whole container opaque. \
+\
+We can use this little pseudo-class trick to make the background show up: \
+\
+#container \{\
+  width: 95%;\
+  margin: 0 auto;\
+  position: relative; \
+\}\
+\
+#container::after \{\
+  content: "";\
+  background: url(img/finn.jpg);\
+  opacity: 0.5;\
+  top: 0;\
+  left: 0;\
+  bottom: 0;\
+  right: 0;\
+  position: absolute;\
+  z-index: -1;\
+\}\
+\
+And then we can add in our old commands: \
+\
+\
+
+\b RGBA 
+\b0 \
+\
+And there\'92s one more thing I want to show, which is the rgba color property. This will let you add some transparency to something that\'92s already got color on it. \
+\
+  background-color: rgba(152,191,33, 0.5); \
+\
+And see how it looks with the transparency. \
+}
